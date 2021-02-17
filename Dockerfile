@@ -26,6 +26,8 @@ CMD ["mvn"]
 #Gradle
 ADD file ... in /
 
+CMD ["bash"]
+
 /bin/sh -c set -xe &&
 
 /bin/sh -c [ -z "$(apt-get
