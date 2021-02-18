@@ -1,65 +1,80 @@
-FROM openjdk:8-jdk-alpine
+#Maven
+FROM openjdk:8-jdk
 
-LABEL Miguel Doctor <migueldoctor@gmail.com>
-
-RUN apk add --no-cache curl tar bash procps
-
-# Downloading and installing Maven
-ARG MAVEN_VERSION=3.6.1
+ARG MAVEN_VERSION=3.6.3
 ARG USER_HOME_DIR="/root"
-ARG SHA=b4880fb7a3d81edd190a029440cdf17f308621af68475a4fe976296e71ff4a4b546dd6d8a58aaafba334d309cc11e638c52808a4b0e818fc0fd544226d952544
+ARG SHA=c35a1803a6e70a126e80b2b3ae33eed961f83ed74d18fcd16909b2d44d7dada3203f1ffe726c17ef8dcca2dcaa9fca676987befeadc9b9f759967a8cb77181c0
 ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
 
 RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
-  && echo "Downlaoding maven" \
   && curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
-  \
-  && echo "Checking download hash" \
   && echo "${SHA}  /tmp/apache-maven.tar.gz" | sha512sum -c - \
-  \
-  && echo "Unziping maven" \
   && tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 \
-  \
-  && echo "Cleaning and setting links" \
   && rm -f /tmp/apache-maven.tar.gz \
   && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
 ENV MAVEN_HOME /usr/share/maven
 ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 
-# Downloading and installing Gradle
-# 1- Define a constant with the version of gradle you want to install
-ARG GRADLE_VERSION=4.0.1
+COPY mvn-entrypoint.sh /usr/local/bin/mvn-entrypoint.sh
+COPY settings-docker.xml /usr/share/maven/ref/
 
-# 2- Define the URL where gradle can be downloaded from
-ARG GRADLE_BASE_URL=https://services.gradle.org/distributions
+ENTRYPOINT ["/usr/local/bin/mvn-entrypoint.sh"]
+CMD ["mvn"]
 
-# 3- Define the SHA key to validate the gradle download
-#    obtained from here https://gradle.org/release-checksums/
-ARG GRADLE_SHA=d717e46200d1359893f891dab047fdab98784143ac76861b53c50dbd03b44fd4
+RUN set -o errexit -o nounset \
+    echo "Testing Maven installation...." \
+    && mvn --version
 
-# 4- Create the directories, download gradle, validate the download, install it, remove downloaded file and set links
-RUN mkdir -p /usr/share/gradle /usr/share/gradle/ref \
-  && echo "Downlaoding gradle hash" \
-  && curl -fsSL -o /tmp/gradle.zip ${GRADLE_BASE_URL}/gradle-${GRADLE_VERSION}-bin.zip \
-  \
-  && echo "Checking download hash" \
-  && echo "${GRADLE_SHA}  /tmp/gradle.zip" | sha256sum -c - \
-  \
-  && echo "Unziping gradle" \
-  && unzip -d /usr/share/gradle /tmp/gradle.zip \
-   \
-  && echo "Cleaning and setting links" \
-  && rm -f /tmp/gradle.zip \
-  && ln -s /usr/share/gradle/gradle-${GRADLE_VERSION} /usr/bin/gradle
+#Gradle
+FROM adoptopenjdk:8-jdk-hotspot
 
-# 5- Define environmental variables required by gradle
-ENV GRADLE_VERSION 4.0.1
-ENV GRADLE_HOME /usr/bin/gradle
-ENV GRADLE_USER_HOME /cache
+CMD ["gradle"]
 
-ENV PATH $PATH:$GRADLE_HOME/bin
+ENV GRADLE_HOME /opt/gradle
 
-VOLUME $GRADLE_USER_HOME
+RUN set -o errexit -o nounset \
+    && echo "Adding gradle user and group" \
+    && groupadd --system --gid 1000 gradle \
+    && useradd --system --gid gradle --uid 1000 --shell /bin/bash --create-home gradle \
+    && mkdir /home/gradle/.gradle \
+    && chown --recursive gradle:gradle /home/gradle \
+    \
+    && echo "Symlinking root Gradle cache to gradle Gradle cache" \
+    && ln -s /home/gradle/.gradle /root/.gradle
 
-CMD [""]
+VOLUME /home/gradle/.gradle
+
+WORKDIR /home/gradle
+
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends \
+        fontconfig \
+        unzip \
+        wget \
+        \
+        bzr \
+        git \
+        git-lfs \
+        mercurial \
+        openssh-client \
+        subversion \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV GRADLE_VERSION 6.8.2
+ARG GRADLE_DOWNLOAD_SHA256=8de6efc274ab52332a9c820366dd5cf5fc9d35ec7078fd70c8ec6913431ee610
+RUN set -o errexit -o nounset \
+    && echo "Downloading Gradle" \
+    && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+    \
+    && echo "Checking download hash" \
+    && echo "${GRADLE_DOWNLOAD_SHA256} *gradle.zip" | sha256sum --check - \
+    \
+    && echo "Installing Gradle" \
+    && unzip gradle.zip \
+    && rm gradle.zip \
+    && mv "gradle-${GRADLE_VERSION}" "${GRADLE_HOME}/" \
+    && ln --symbolic "${GRADLE_HOME}/bin/gradle" /usr/bin/gradle \
+    \
+    && echo "Testing Gradle installation" \
+    && gradle --version
