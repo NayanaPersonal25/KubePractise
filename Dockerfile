@@ -54,9 +54,7 @@ RUN apt-get update && apt-get install -y jq \
   
   
 #Maven
-FROM ibmjava:8-sdk-alpine
-
-RUN apk add --no-cache curl tar bash procps
+FROM openjdk:8-jdk
 
 ARG MAVEN_VERSION=3.6.3
 ARG USER_HOME_DIR="/root"
