@@ -50,7 +50,7 @@ FROM python:3.6.5 AS lambdadeploy
 MAINTAINER Nayana
 RUN apt-get update && apt-get install -y jq \
 	&& pip install awscli \
-	&& pip install boto3 \
+	&& pip install boto3 
   
   
 #Maven
