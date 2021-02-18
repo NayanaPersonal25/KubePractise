@@ -1,4 +1,4 @@
-#Gradle
+#Gradle 
 FROM adoptopenjdk:8-jdk-hotspot AS gradlebuild
 CMD ["gradle"]
 ENV GRADLE_HOME /opt/gradle
