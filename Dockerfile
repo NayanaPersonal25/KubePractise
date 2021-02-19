@@ -1,15 +1,12 @@
-#Lambda deploy 
-FROM python:3.6.5 AS lambdadeploy
+#Python
+FROM python:3.6.5 AS pythonplugins
 MAINTAINER Nayana
 RUN apt-get update && apt-get install -y jq \
 	&& pip install awscli \
 	&& pip install boto3 
   
   
-#Maven
-
-#FROM openjdk:8-jdk-alpine
-#RUN apk add --no-cache curl tar bash procps
+#Maven and Gradle
 FROM openjdk:8-jdk
 # Downloading and installing Maven
 ARG MAVEN_VERSION=3.6.3
