@@ -22,7 +22,8 @@ RUN apk --update add openjdk8-jre
 #Set Java environment
 #ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
-ENV PATH ${PATH}:${JAVA_HOME}/bin
+ENV PATH $PATH:${JAVA_HOME}/jre/bin:${JAVA_HOME}/bin
+#ENV PATH ${PATH}:${JAVA_HOME}/bin
 RUN java -version
 
 #install Maven
