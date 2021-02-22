@@ -7,7 +7,7 @@ RUN apk add --no-cache \
     && pip3 install \
         awscli==1.18.25 \
     && pip3 install \
-        boto3==1.12.25 \
+        boto3==1.12.25 \ 
     && rm -rf /var/cache/apk/*
 
 #Install additional packages
