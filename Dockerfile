@@ -4,7 +4,7 @@ RUN apk add --no-cache \
         python3==3.8.7-r1 \
         py3-pip \
     && pip3 install --upgrade pip \
-    && pip3 install \
+    && pip3 install \ 
         awscli==1.18.25 \
     && pip3 install \
         boto3==1.12.25 \ 
