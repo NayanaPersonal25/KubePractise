@@ -20,7 +20,8 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 #Install jdk-jre 8
 RUN apk --update add openjdk8-jre
 #Set Java environment
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
+#ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV PATH ${PATH}:${JAVA_HOME}/bin
 RUN java -version
 
