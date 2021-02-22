@@ -11,7 +11,7 @@ RUN apk add --no-cache \
     && rm -rf /var/cache/apk/*
 
 #Install additional packages
-RUN apk add bash ncurses git zip curl==7.74.0-r0 jq=1.6-r1 bc==1.07.1-r1
+RUN apk add bash ncurses git grep zip curl==7.74.0-r0 jq=1.6-r1 bc==1.07.1-r1
 
 RUN aws --version
 #Symbolic link forpython
