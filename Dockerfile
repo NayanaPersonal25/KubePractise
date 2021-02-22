@@ -17,14 +17,6 @@ RUN aws --version
 #Symbolic link forpython
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-#Install jdk-jre 8
-#RUN apk --update add openjdk8-jre
-#Set Java environment
-#ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
-#ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
-#ENV PATH ${PATH}:${JAVA_HOME}/bin
-#RUN java -version
-
 # add a simple script that can auto-detect the appropriate JAVA_HOME value
 # based on whether the JDK or only the JRE is installed
 RUN { \
@@ -38,7 +30,6 @@ ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 
 ENV JAVA_VERSION 8u131
-#ENV JAVA_ALPINE_VERSION 8.131.11-r2
 ENV JAVA_ALPINE_VERSION 8.275.01-r0
 
 RUN set -x \
