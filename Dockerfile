@@ -2,16 +2,16 @@ FROM alpine:3.13.2
 RUN apk update
 RUN apk add --no-cache \
         python3==3.8.7-r1 \
-        py3-pip \
-    && pip3 install --upgrade pip \
-    && pip3 install \ 
+        py3-pip==20.3.4-r0 \
+    && pip3 install --upgrade pip==21.0.1 \
+    && pip3 install \
         awscli==1.18.25 \
     && pip3 install \
-        boto3==1.12.25 \ 
+        boto3==1.12.25 \
     && rm -rf /var/cache/apk/*
 
 #Install additional packages
-RUN apk add bash ncurses git grep zip curl==7.74.0-r0 jq=1.6-r1 bc==1.07.1-r1
+RUN apk add bash==5.1.0-r0 git==2.30.1-r0 grep==3.6-r0 zip==3.0-r9 curl==7.74.0-r0 jq=1.6-r1 bc==1.07.1-r1
 
 RUN aws --version
 #Symbolic link forpython
