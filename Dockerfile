@@ -66,3 +66,17 @@ RUN mkdir -p /usr/share/gradle /usr/share/gradle/ref \
 VOLUME $GRADLE_USER_HOME
 
 RUN gradle -version
+
+#Install Node and npm
+ENV NODE_VERSION=v14.15.0
+ENV CHECKSUM="452b407a2d85b2eeaa58a5b99fb864cb9f9d3f3602f1610b7ea4c7e9007e2ce3"
+
+RUN addgroup -g 1000 node \
+    && adduser -u 1000 -G node -s /bin/sh -D node \
+    && apk add --no-cache \
+        libstdc++
+
+RUN curl -fsSLO --compressed "https://unofficial-builds.nodejs.org/download/release/$NODE_VERSION/node-$NODE_VERSION-linux-x64-musl.tar.xz"; \
+    echo "$CHECKSUM  node-$NODE_VERSION-linux-x64-musl.tar.xz" | sha256sum -c - \
+      && tar -xJf "node-$NODE_VERSION-linux-x64-musl.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
+      && ln -s /usr/local/bin/node /usr/local/bin/nodejs;
