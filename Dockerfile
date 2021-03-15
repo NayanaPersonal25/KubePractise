@@ -11,7 +11,7 @@ RUN apk add --no-cache \
     && rm -rf /var/cache/apk/*
 
 #Install additional packages
-RUN apk add bash==5.1.0-r0 git==2.30.1-r0 grep==3.6-r0 zip==3.0-r9 curl==7.74.0-r0 jq=1.6-r1 bc==1.07.1-r1 ncurses==6.2_p20210109-r0
+RUN apk add bash==5.1.0-r0 git==2.30.2-r0 grep==3.6-r0 zip==3.0-r9 curl==7.74.0-r1  jq=1.6-r1 bc==1.07.1-r1 ncurses==6.2_p20210109-r0
 
 
 RUN aws --version
@@ -88,6 +88,6 @@ ENV TERRAFORM_VERSION 0.12.23
 RUN apk --update --no-cache add libc6-compat openssh-client
 
 RUN cd /usr/local/bin && \
-    curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform_${TERRAFORM_VERSION}_linu$
+    curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
