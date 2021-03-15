@@ -81,3 +81,13 @@ RUN curl -fsSLO --compressed "https://unofficial-builds.nodejs.org/download/rele
     echo "$CHECKSUM  node-$NODE_VERSION-linux-x64-musl.tar.xz" | sha256sum -c - \
       && tar -xJf "node-$NODE_VERSION-linux-x64-musl.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
       && ln -s /usr/local/bin/node /usr/local/bin/nodejs;
+
+# Install terraform
+ENV TERRAFORM_VERSION 0.12.23
+
+RUN apk --update --no-cache add libc6-compat openssh-client
+
+RUN cd /usr/local/bin && \
+    curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform_${TERRAFORM_VERSION}_linu$
+    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
+    rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
