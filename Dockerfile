@@ -1,7 +1,8 @@
-FROM alpine:3.13.2
+FROM docker:20.10.5
+#FROM alpine:3.13.2
 RUN apk update
 RUN apk add --no-cache \
-        python3==3.8.7-r1 \
+        python3==3.8.8-r0 \
         py3-pip==20.3.4-r0 \
     && pip3 install --upgrade pip==21.0.1 \
     && pip3 install \
